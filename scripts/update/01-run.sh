@@ -64,7 +64,7 @@ if [[ ! -z "${UMBREL_OS:-}" ]]; then
     # Make sure dhcpd ignores virtual network interfaces
     dhcpd_conf="/etc/dhcpcd.conf"
     dhcpd_rule="denyinterfaces veth*"
-    if [[ -f "${dhcpd_conf}" ]] && ! cat "${dhcpd_conf}" | grep --quiet "${dhcpd_rule}"; then
+    if [[ -f "${dhcpd_conf}" ]] && ! cat "${dhcpd_conf}" | grep -q "${dhcpd_rule}"; then
       echo "${dhcpd_rule}" | tee -a "${dhcpd_conf}"
       systemctl restart dhcpcd
     fi
@@ -165,10 +165,7 @@ EOF
   # Copy Docker data dir to external storage
   copy_docker_to_external_storage () {
     mkdir -p "${EXTERNAL_DOCKER_DIR}"
-    cp  --recursive \
-        --archive \
-        --no-target-directory \
-        "${DOCKER_DIR}" "${EXTERNAL_DOCKER_DIR}"
+    cp  -raT "${DOCKER_DIR}" "${EXTERNAL_DOCKER_DIR}"
   }
 
   echo "Copying Docker data directory to external storage..."
@@ -199,7 +196,7 @@ rsync --archive \
 legacy_electrs_dir="${UMBREL_ROOT}/electrs/db/mainnet"
 if [[ -d "${legacy_electrs_dir}" ]]; then
   echo "Found legacy electrs dir, removing it..."
-  rm --recursive --force "${legacy_electrs_dir}"
+  rm -rf "${legacy_electrs_dir}"
 fi
 
 # Handle updating static assets for samourai-server app
@@ -268,7 +265,7 @@ EOF
   MOUNT_POINT="/mnt/data"
   SWAP_DIR="/swap"
   SWAP_FILE="${SWAP_DIR}/swapfile"
-  if ! df -h "${SWAP_DIR}" 2> /dev/null | grep --quiet '/dev/sd'; then
+  if ! df -h "${SWAP_DIR}" 2> /dev/null | grep -q '/dev/sd'; then
     cat <<EOF > "$UMBREL_ROOT"/statuses/update-status.json
 {"state": "installing", "progress": 97, "description": "Setting up swap", "updateTo": "$RELEASE"}
 EOF
@@ -278,7 +275,7 @@ EOF
     mount --bind "${MOUNT_POINT}/swap" "${SWAP_DIR}"
 
     echo "Checking ${SWAP_DIR} is now on external storage..."
-    df -h "${SWAP_DIR}" | grep --quiet '/dev/sd'
+    df -h "${SWAP_DIR}" | grep -q '/dev/sd'
 
     echo "Setting up swapfile"
     rm "${SWAP_FILE}" || true

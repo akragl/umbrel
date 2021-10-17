@@ -24,17 +24,17 @@ main () {
       break
     fi
 
-    if ! grep --quiet " ${mount_point} " /proc/mounts; then
+    if ! grep -q " ${mount_point} " /proc/mounts; then
       echo "External storage is no longer mounted!"
       break
     fi
 
-    if grep " ${mount_point} " /proc/mounts | grep --quiet '[ ,]ro[ ,]'; then
+    if grep " ${mount_point} " /proc/mounts | grep -q '[ ,]ro[ ,]'; then
       echo "External storage is mounted as read only!"
       break
     fi
 
-    if ! df -h "${UMBREL_ROOT}" | grep --quiet "/dev/${block_device}"; then
+    if ! df -h "${UMBREL_ROOT}" | grep -q "/dev/${block_device}"; then
       echo "Umbrel root is no longer bind mounted to external storage!"
       break
     fi
