@@ -106,10 +106,7 @@ fi
 if [[ "${update_type}" == "path" ]]; then
   echo "Copying Umbrel ${RELEASE} from ${update_path}"
   mkdir -p "${UMBREL_ROOT}/.umbrel-${RELEASE}"
-  cp --recursive \
-    --archive \
-    --no-target-directory \
-    "${update_path}" "${UMBREL_ROOT}/.umbrel-${RELEASE}"
+  cp -raT "${update_path}" "${UMBREL_ROOT}/.umbrel-${RELEASE}"
   cd "${UMBREL_ROOT}/.umbrel-${RELEASE}"
 fi
 

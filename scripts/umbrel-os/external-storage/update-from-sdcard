@@ -27,7 +27,7 @@ check_dependencies () {
 check_semver_range () {
   local range="${1}"
   local version="${2}"
-  "${UMBREL_ROOT}/scripts/umbrel-os/semver" -r "${range}" "${version}" | grep --quiet "^${version}$"
+  "${UMBREL_ROOT}/scripts/umbrel-os/semver" -r "${range}" "${version}" | grep -q "^${version}$"
 }
 
 main () {

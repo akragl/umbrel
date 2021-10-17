@@ -25,11 +25,11 @@ has_service_failed () {
 }
 
 has_umbrel_started () {
-  cat "${STATUS_FILE_PATH}" | grep --silent '^umbrel:completed$'
+  cat "${STATUS_FILE_PATH}" | grep -q '^umbrel:completed$'
 }
 
 has_error_been_caught () {
-  cat "${STATUS_FILE_PATH}" | grep --silent ':errored:'
+  cat "${STATUS_FILE_PATH}" | grep -q ':errored:'
 }
 
 check_root
